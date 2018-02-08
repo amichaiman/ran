@@ -54,7 +54,7 @@ char *dup_letters_by_digits(char *letters, char *digits){
 
     //length of new array is determined by the sum of digits in 'digits' array
     for (i=0; i<len_digits; i++){
-        len_new_arrray = digits[i] - '0';
+        len_new_arrray += digits[i] - '0';
     }
 
     new_array = (char *) malloc ((len_new_arrray+1)* sizeof(char));
