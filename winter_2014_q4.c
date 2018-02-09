@@ -44,8 +44,8 @@ void print_seq_indexs_in_matrix(int mat[][N], int wanted_seq_len) {
     int i;
 
     for (i=0; i<N; i++){
-        find_seq_in_row(mat[i],wanted_seq_len,i);
-        find_seq_in_col(mat,i,wanted_seq_len);
+        find_seq_in_row(mat[i],wanted_seq_len,i);   //print sequences row i
+        find_seq_in_col(mat,i,wanted_seq_len);      //prints sequences column i
     }
 }
 
@@ -67,14 +67,14 @@ void find_seq_in_row(int row[], int wanted_seq_len, int cur_row_num) {
     int cur_seq_len = 1;
 
     for (i=1; i<N; i++){
-        if (row[i] == row[i-1]){
+        if (row[i] == row[i-1]){    //if current index is part of a sequence
             cur_seq_len++;
-            if (cur_seq_len == wanted_seq_len){
+            if (cur_seq_len == wanted_seq_len){ //wanted sequence length reached
                 printf("sequence found at mat[%d][%d]\n",cur_row_num,i-(wanted_seq_len-1));
                 cur_seq_len--;
             }
         } else {
-            cur_seq_len = 1;
+            cur_seq_len = 1;     //current index starts new sequence
         }
     }
 }
