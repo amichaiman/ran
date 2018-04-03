@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 
 #define SIZE 10
-#define QUIT 7
+#define QUIT 6
 
 typedef struct {
     char id[SIZE];
@@ -28,6 +29,8 @@ void instuctions();
 void printStudent(Student *toPrint);
 void printList(List *lst);
 int numberOfStudents(List *lst);
+void updateStudent(List *lst);
+void removeNode(List *lst);
 
 int main()
 {
@@ -49,11 +52,17 @@ int main()
                 addNode(&lst);
                 break;
             case 2:
+                removeNode(&lst);
+                break;
+            case 3:
+                updateStudent(&lst);
+                break;
+            case 4:
                 printf("----------------------------------\n");
                 printf("you have here %d students\n",numberOfStudents(&lst));
                 printf("----------------------------------\n");
                 break;
-            case 4:
+            case 5:
                 printList(&lst);
                 break;
 
@@ -67,6 +76,39 @@ int main()
 
 
     return 0;
+}
+
+void removeNode(List *lst)
+{
+    char toFind[SIZE]; //  יצרנו צ'אר ארעי שאיתו נבדוק את האיי דיאים בכל הסטראקטים של הסטודנטים
+
+    printf("Enter the students' ID you would like to remove:\n");
+    scanf("%s", toFind);
+
+    Node *currentNode = lst->head; //יוצרים נואוד ארעי שאליו נשווה
+
+    //ראשית נטפל במקרה הקצה בו התא הראשון הוא האיי די שנרצה להסיר
+    if (strcmp(toFind, currentNode->student->id) == 0) //בודקים את האיי די של הסטודנט של הקרנטנואוד הבא - לא של הנוכחי, למה? בהמשך נבין
+    {
+        lst->head=currentNode->next;  //במצב כזה אני עושה מעקף בו ההדר יפנה לשני
+        free(currentNode); //ואת הראשון פשוט נמחק
+        return;//ויוצאים מהפונקציה
+    }
+
+
+    while(currentNode->next!=NULL)
+    {
+        if (strcmp(toFind, currentNode->next->student->id) == 0) //בודקים את האיי די של הסטודנט של הקרנטנואוד הבא - לא של הנוכחי, למה? בהמשך נבין
+        {
+            Node *toDelete = currentNode->next; //יוצר מתשנה זמני שיכיל את מי שאני מוחק
+            currentNode->next = currentNode->next->next; //מבצע מעקף לכתובת הבאה
+            free(toDelete);
+            return;
+        } else
+            currentNode = currentNode->next;
+    //אם הגענו לסוף הפונקציה סימן שלא עשינו ריטרן
+        printf("wrong id!\n");
+    }
 }
 
 void printList(List *lst)
@@ -97,9 +139,11 @@ void instuctions()
     printf("-------------------------------------------------------\n");
     printf("WELCOME TO RAN'S HIGH SCHOOL! WHAT DO YOU WISH TO DO?\n");
     printf("1\t Add student\n");
-    printf("2\t print the number of the student\n");  // זה המניה של הסטראקטים
-    printf("4\t Print list\n");
-    printf("7\t QUIT\n");
+    printf("2\t Delete student\n");
+    printf("3\t Update student info\n");
+    printf("4\t print the number of the student\n");  // זה המניה של הסטראקטים
+    printf("5\t Print list\n");
+    printf("6\t QUIT\n");
     printf("-------------------------------------------------------\n");
 
 }
@@ -153,4 +197,30 @@ Node *addNode(List *lst) {
 
     return newNode;
 
+}
+
+void updateStudent(List *lst) //מקבל מהמיין את הכתובת של הליסט
+{
+
+    char toUpdate[SIZE];
+
+    printf("Enter the students' id you want to update:\n");
+
+    scanf("%s",toUpdate);
+
+
+    Node *currentNode = lst->head; //מצביע כל פעם לנוד אחד ברשימה
+    while(currentNode!=NULL)    //לא הגענו לסוף
+    {
+        if(strcmp(toUpdate,currentNode->student->id)==0) //אם הנוד הנוכחי זה מי שאני רוצה לעדכן
+        {
+            printf("Enter new info:\n");
+            free(currentNode->student);         //מוחק את הישן
+
+            currentNode->student = getStudent();    //שם חדש! וואו משהו משהו אוקיי אוקיי אןקיי
+            return;
+        }
+        currentNode=currentNode->next;
+    }
+    printf("\ninvalid id, try again\n\n");
 }
